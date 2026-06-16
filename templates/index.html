@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Головна{% endblock %}
+
+{% block head %}
+<style>
+  .search-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 57px); /* висота шапки */
+    padding: 2rem 1rem 8rem;
+  }
+
+  .search-logo {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #222;
+    letter-spacing: -1px;
+    margin-bottom: 2rem;
+    user-select: none;
+  }
+
+  .search-form {
+    width: 100%;
+    max-width: 580px;
+  }
+
+  .search-input {
+    border-radius: 8px 0 0 8px !important;
+    border: 1.5px solid #ddd;
+    border-right: none;
+    padding: 0.65rem 1.25rem;
+    font-size: 1rem;
+    color: #222;
+    box-shadow: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .search-input:focus {
+    border-color: #aaa;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    outline: none;
+  }
+
+  .search-btn {
+    border-radius: 0 8px 8px 0 !important;
+    border: 1.5px solid #ddd;
+    border-left: none;
+    background: #f8f8f8;
+    color: #444;
+    padding: 0.65rem 1.25rem;
+    font-size: 1rem;
+    transition: background 0.15s;
+  }
+
+  .search-btn:hover {
+    background: #ececec;
+    color: #111;
+    border-color: #ddd;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="search-wrapper">
+  <form class="search-form" action="/" method="get">
+    <div class="input-group">
+      <input
+        type="search"
+        name="q"
+        class="form-control search-input"
+        placeholder="Пошук..."
+        value="{{ request.args.get('q', '') }}"
+        autocomplete="off"
+      >
+      <button type="submit" class="btn search-btn">Знайти</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

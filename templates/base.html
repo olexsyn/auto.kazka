@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Сайт{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    /* Шапка */
+    .site-header {
+      padding: 0.75rem 1.5rem;
+      border-bottom: 1px solid #e5e5e5;
+      background: #fff;
+    }
+
+    .site-header .brand {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #222;
+      text-decoration: none;
+    }
+
+    .site-header .brand:hover {
+      color: #0d6efd;
+    }
+
+    /* Меню користувача */
+    .user-menu .dropdown-toggle {
+      font-size: 0.9rem;
+      color: #444;
+      background: none;
+      border: none;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .user-menu .dropdown-toggle:hover,
+    .user-menu .dropdown-toggle:focus {
+      background: #f0f0f0;
+      color: #111;
+      box-shadow: none;
+    }
+
+    .user-menu .login-link {
+      font-size: 0.9rem;
+      color: #444;
+      text-decoration: none;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .user-menu .login-link:hover {
+      background: #f0f0f0;
+      color: #111;
+    }
+
+    .user-menu .dropdown-menu {
+      min-width: 180px;
+      font-size: 0.9rem;
+      border: 1px solid #e5e5e5;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      border-radius: 8px;
+      padding: 0.4rem 0;
+    }
+
+    .user-menu .dropdown-item {
+      padding: 0.5rem 1rem;
+      color: #333;
+    }
+
+    .user-menu .dropdown-item:hover {
+      background: #f5f5f5;
+    }
+
+    .user-menu .dropdown-divider {
+      margin: 0.3rem 0;
+      border-color: #e5e5e5;
+    }
+
+    .user-menu .logout-item {
+      color: #dc3545;
+    }
+
+    .user-menu .logout-item:hover {
+      background: #fff5f5;
+      color: #b02a37;
+    }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+  <!-- Шапка -->
+  <header class="site-header d-flex align-items-center justify-content-between">
+    <a href="/" class="brand">Авто.Казка</a>
+
+    <div class="user-menu">
+      {% if session.get('email') %}
+        <!-- Авторизований користувач -->
+        <div class="dropdown">
+          <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ session['email'] }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="/home/">Особистий кабінет</a></li>
+            <li><a class="dropdown-item" href="/">Пошук</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item logout-item" href="/logout/">Вийти</a></li>
+          </ul>
+        </div>
+      {% else %}
+        <!-- Неавторизований -->
+        <a href="/login/" class="login-link">Увійти</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Основний контент -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

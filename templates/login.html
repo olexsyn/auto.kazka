@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Вхід{% endblock %}
+
+{% block head %}
+<style>
+  .login-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 57px);
+    padding: 2rem 1rem 8rem;
+  }
+
+  .login-logo {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #222;
+    letter-spacing: -1px;
+    margin-bottom: 2rem;
+    user-select: none;
+    text-decoration: none;
+  }
+
+  .login-logo:hover {
+    color: #0d6efd;
+  }
+
+  .login-form {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .login-input {
+    border-radius: 8px 0 0 8px !important;
+    border: 1.5px solid #ddd;
+    border-right: none;
+    padding: 0.65rem 1.25rem;
+    font-size: 1rem;
+    color: #222;
+    box-shadow: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .login-input:focus {
+    border-color: #aaa;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    outline: none;
+  }
+
+  .login-btn {
+    border-radius: 0 8px 8px 0 !important;
+    border: 1.5px solid #ddd;
+    border-left: none;
+    background: #f8f8f8;
+    color: #444;
+    padding: 0.65rem 1.25rem;
+    font-size: 1rem;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+
+  .login-btn:hover {
+    background: #ececec;
+    color: #111;
+    border-color: #ddd;
+  }
+
+  .login-hint {
+    margin-top: 1.25rem;
+    font-size: 0.875rem;
+    color: #888;
+    text-align: center;
+  }
+
+  .alert-sm {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+
+  <div class="login-form">
+    {% if error %}
+      <div class="alert alert-danger alert-sm">{{ error }}</div>
+    {% endif %}
+
+    <form action="/login/" method="post">
+      <div class="input-group">
+        <input
+          type="email"
+          name="email"
+          class="form-control login-input"
+          placeholder="ваша@пошта.com"
+          value="{{ saved_email }}"
+          required
+          autocomplete="email"
+        >
+        <button type="submit" class="btn login-btn">Надіслати</button>
+      </div>
+    </form>
+
+    <p class="login-hint">На вказану адресу буде надісланий код для входу.</p>
+  </div>
+</div>
+{% endblock %}

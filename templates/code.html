@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}Введіть код{% endblock %}
+
+{% block head %}
+<style>
+  .code-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 57px);
+    padding: 2rem 1rem 8rem;
+  }
+
+  .code-logo {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #222;
+    letter-spacing: -1px;
+    margin-bottom: 2rem;
+    user-select: none;
+    text-decoration: none;
+  }
+
+  .code-logo:hover {
+    color: #0d6efd;
+  }
+
+  .code-form {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .code-hint {
+    font-size: 0.9rem;
+    color: #555;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+
+  .code-hint strong {
+    color: #222;
+  }
+
+  .code-input {
+    border-radius: 8px 0 0 8px !important;
+    border: 1.5px solid #ddd;
+    border-right: none;
+    padding: 0.65rem 1.25rem;
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+    color: #222;
+    box-shadow: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    text-align: center;
+  }
+
+  .code-input:focus {
+    border-color: #aaa;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    outline: none;
+  }
+
+  .code-btn {
+    border-radius: 0 8px 8px 0 !important;
+    border: 1.5px solid #ddd;
+    border-left: none;
+    background: #f8f8f8;
+    color: #444;
+    padding: 0.65rem 1.25rem;
+    font-size: 1rem;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+
+  .code-btn:hover:not(:disabled) {
+    background: #ececec;
+    color: #111;
+    border-color: #ddd;
+  }
+
+  .code-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .code-message {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    text-align: center;
+    min-height: 1.4em;
+  }
+
+  .code-message.error {
+    color: #dc3545;
+  }
+
+  .code-message.info {
+    color: #888;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="code-wrapper">
+
+  <div class="code-form">
+    <p class="code-hint">
+      Введіть код, надісланий на адресу <strong>{{ email }}</strong>
+    </p>
+
+    <div class="input-group">
+      <input
+        type="text"
+        id="codeInput"
+        class="form-control code-input"
+        placeholder="_ _ _ _ _"
+        maxlength="5"
+        autocomplete="one-time-code"
+        inputmode="numeric"
+      >
+      <button type="button" id="submitBtn" class="btn code-btn">Перевірити</button>
+    </div>
+
+    <div id="message" class="code-message"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const input = document.getElementById('codeInput');
+  const btn = document.getElementById('submitBtn');
+  const msg = document.getElementById('message');
+
+  // Відправка по кнопці або Enter
+  btn.addEventListener('click', submitCode);
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') submitCode();
+  });
+
+  // Автоматична відправка при введенні 5 цифр
+  input.addEventListener('input', function() {
+    if (input.value.length === 5) submitCode();
+  });
+
+  function setMessage(text, type) {
+    msg.textContent = text;
+    msg.className = 'code-message ' + type;
+  }
+
+  function setDisabled(state) {
+    btn.disabled = state;
+    input.disabled = state;
+  }
+
+  async function submitCode() {
+    const code = input.value.trim();
+
+    if (code.length !== 5) {
+      setMessage('Код має складатися з 5 цифр.', 'error');
+      return;
+    }
+
+    setDisabled(true);
+    setMessage('Перевіряємо...', 'info');
+
+    try {
+      const response = await fetch('/code/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: code })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setMessage('Код вірний. Входимо...', 'info');
+        window.location.href = '/home/';
+        return;
+      }
+
+      if (data.error === 'limit') {
+        setMessage('Вичерпано кількість спроб. Перенаправляємо...', 'error');
+        setTimeout(() => { window.location.href = '/login/'; }, 2000);
+        return;
+      }
+
+      if (data.error === 'wrong') {
+        setMessage(
+          'Невірний код. Залишилось спроб: ' + data.attempts_left,
+          'error'
+        );
+        input.value = '';
+        setDisabled(false);
+        input.focus();
+        return;
+      }
+
+      // Непередбачена відповідь
+      setMessage('Сталася помилка. Спробуйте ще раз.', 'error');
+      setDisabled(false);
+
+    } catch (err) {
+      setMessage('Помилка зєднання з сервером.', 'error');
+      setDisabled(false);
+    }
+  }
+
+  // Фокус на полі при завантаженні
+  input.focus();
+</script>
+{% endblock %}
