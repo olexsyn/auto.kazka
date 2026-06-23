@@ -4,13 +4,15 @@
 
 {% block head %}
 <style>
+
   .search-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: calc(100vh - 57px); /* висота шапки */
-    padding: 2rem 1rem 8rem;
+      padding: 4rem 1rem 2rem;
+  }
+
+  .search-form {
+      width: 100%;
+      max-width: 580px;
+      margin: 0 auto;
   }
 
   .search-logo {
@@ -20,11 +22,6 @@
     letter-spacing: -1px;
     margin-bottom: 2rem;
     user-select: none;
-  }
-
-  .search-form {
-    width: 100%;
-    max-width: 580px;
   }
 
   .search-input {
@@ -65,13 +62,14 @@
 
 {% block content %}
 <div class="search-wrapper">
+  <p>Пошук авто за номером:</p>
   <form class="search-form" action="/" method="get">
     <div class="input-group">
       <input
         type="search"
         name="q"
         class="form-control search-input"
-        placeholder="Пошук..."
+        placeholder="почніть з вводу цифр..."
         value="{{ request.args.get('q', '') }}"
         autocomplete="off"
       >
