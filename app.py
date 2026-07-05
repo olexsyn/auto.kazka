@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, redirect, make_response, session, jsonify
+from werkzeug.middleware.proxy_fix import ProxyFix  # myip
+from markupsafe import escape                       # myip
 from config import Config
 from dotenv import load_dotenv
 from auth import generate_code, save_user_code, send_code_smtp, send_code_file, \
@@ -99,6 +101,32 @@ def code():
     # GET
     return render_template('code.html', email=email)
 
+
+# Довіряємо одному проксі (Nginx) попереду -- бере реальний IP з X-Forwarded-For
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+
+@app.route('/myip/')
+def myip():
+    fields = [
+        ('REMOTE_ADDR', request.remote_addr),
+        ('REMOTE_PORT', request.environ.get('REMOTE_PORT', '')),
+        ('X_FORWARDED_FOR', request.headers.get('X-Forwarded-For', '')),
+        ('X_REAL_IP', request.headers.get('X-Real-IP', '')),
+        ('USER_AGENT', request.headers.get('User-Agent', '')),
+        ('ACCEPT', request.headers.get('Accept', '')),
+        ('ACCEPT_LANGUAGE', request.headers.get('Accept-Language', '')),
+        ('ACCEPT_ENCODING', request.headers.get('Accept-Encoding', '')),
+        ('CACHE_CONTROL', request.headers.get('Cache-Control', '')),
+        ('REFERER', request.headers.get('Referer', '')),
+        ('SEC_CH_UA', request.headers.get('Sec-CH-UA', '')),
+        ('SEC_CH_UA_MOBILE', request.headers.get('Sec-CH-UA-Mobile', '')),
+        ('SEC_CH_UA_PLATFORM', request.headers.get('Sec-CH-UA-Platform', '')),
+    ]
+    rows = ''.join(
+        f'<tr class="{"gr" if i % 2 else ""}"><td>{escape(k)}</td><td>&gt;</td><td>{escape(v)}</td></tr>'
+        for i, (k, v) in enumerate(fields)
+    )
+    return f'<table>{rows}</table>'
 
 if __name__ == '__main__':
     app.run()
