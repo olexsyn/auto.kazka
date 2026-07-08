@@ -3,7 +3,7 @@ import random
 from datetime import datetime
 
 # Шляхи до файлів
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 USERS_FILE = os.path.join(BASE_DIR, 'data', 'users.txt')
 SENT_DIR = os.path.join(BASE_DIR, 'data', 'sent')
 
