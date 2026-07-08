@@ -2,6 +2,7 @@
 # favicon.ico
 
 .env
+.ide
 venv/
 
 *.srv.*

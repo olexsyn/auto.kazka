@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}IP Info{% endblock %}
+
+{% block head %}
+<style>
+  .home-wrapper {
+    max-width: 1000px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+  }
+
+  .home-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #aaa;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+  }
+
+  .home-field {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .home-field input {
+    flex: 1;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0.55rem 1rem;
+    font-size: 0.95rem;
+    color: #222;
+    background: #fafafa;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .home-field input:focus {
+    outline: none;
+    border-color: #aaa;
+    background: #fff;
+  }
+
+  .home-field input[readonly] {
+    color: #555;
+    cursor: default;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #efefef;
+    margin: 2rem 0 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="home-wrapper">
+
+  <!-- Email -->
+  <div class="home-section-title">User IP</div>
+    <div class="home-field">
+      <input type="email" value="{{ user_ip }}" readonly>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+</div>
+{% endblock %}

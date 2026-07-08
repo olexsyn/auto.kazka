@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 from auth import auth_bp
 from main import main_bp
+from net  import net_bp
 
 load_dotenv()
 
@@ -16,6 +17,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
 app.register_blueprint(main_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(net_bp)
 
 
 if __name__ == '__main__':
